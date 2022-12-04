@@ -5,9 +5,67 @@
 
 - name: Install shadowsocks-rust binaries
   become: true
+  vars:
+    version: shadowsocks_version
   ansible.builtin.unarchive:
     remote_src: true
-    src: "https://github.com/shadowsocks/shadowsocks-rust/releases/download/{{ shadowsocks_rust_version }}\
-          /shadowsocks-{{ shadowsocks_rust_version }}.{{ ansible_architecture }}-unknown-linux-gnu.tar.xz"
+    src: "https://github.com/shadowsocks/shadowsocks-rust/releases/download/{{ version }}\
+          /shadowsocks-{{ version }}.{{ ansible_architecture }}-unknown-linux-gnu.tar.xz"
     dest: /usr/local/bin
-    creates: /usr/local/bin/ssserver
+    creates: "{{ shadowsocks_bin }}"
+
+- name: Create unprivilleged user identity to run shadowsocks
+  become: true
+  ansible.builtin.user:
+    name: shadowsocks
+    state: present
+    create_home: true
+    shell: /usr/bin/false
+    # disable password login
+    password_lock: true
+
+- name: Write shadowsocks config file
+  become: true
+  ansible.builtin.copy:
+    content: |
+      {
+          "server": "{{ shadowsocks_listen_ip }}",
+          "server_port": {{ shadowsocks_port }},
+          "password": "{{ shadowsocks_password }}",
+          "method": "{{ shadowsocks_cipher }}",
+          "mode": "tcp_and_udp",
+          "dns": "quad9_tls"
+      }
+    dest: "{{ shadowsocks_config }}"
+    mode: 0644
+
+- name: Give shadowsocks user access to config file
+  become: true
+  ansible.builtin.file:
+    dest: "{{ shadowsocks_config }}"
+    owner: shadowsocks
+
+- name: Write shadowsocks systemd service
+  become: true
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      Description=Shadowsocks - proxy server that helps you bypass firewalls.
+
+      [Install]
+      WantedBy=multi-user.target
+
+      [Service]
+      Type=simple
+      User=shadowsocks
+      ExecStart={{ shadowsocks_bin }} -c {{ shadowsocks_config }}
+      Restart=always
+    dest: /etc/systemd/system/shadowsocks.service
+    mode: 0644
+
+- name: Enable & Start shadowsocks systemd service
+  become: true
+  ansible.builtin.systemd:
+    name: shadowsocks
+    enabled: true
+    state: started

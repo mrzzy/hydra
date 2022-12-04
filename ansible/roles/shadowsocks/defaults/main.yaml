@@ -3,5 +3,10 @@
 # Ansible Shadowsocks deployment
 #
 
-shadowsocks_rust_version: v1.14.3
+shadowsocks_version: v1.14.3
+shadowsocks_bin: /usr/local/bin/ssserver
+shadowsocks_config: /etc/shadowsocks.json
+shadowsocks_listen_ip: 0.0.0.0
+shadowsocks_cipher: 2022-blake3-aes-256-gcm
+shadowsocks_port: 8388
 shadowsocks_password: ""
