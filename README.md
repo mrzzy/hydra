@@ -1,29 +1,44 @@
-# Boris
-User friendly Shadowsocks proxy deployment.
+# Hydra
+Deploy & manage multiple Shadowsocks proxies from one place.
 
 ## Features
-- Automated Shadowsocks proxy deployment on Alibaba Cloud
-- User friendly Web UI for managing Shadowsocks deployments.
-- Ability to rotate fresh IP addresses to workaround IP blocking.
+- Automated proxy deployment facilitates the quick spin up  of new proxies if one is blocked.
+- Centrally manage multiple proxy deployments from one place.
+- User friendly Web user interface.
 
 ## Design
 ```mermaid
 flowchart TD
-    user((User)) -->|interacts| boris
-    subgraph boris[Boris]
-        ui[Web UI] -->  tf[Terraform\nModule]
+    user((User)) -->|interacts| hydra
+    subgraph hydra[Hydra]
+        ui[Web UI] -->  ansible[Ansible Playbook]
     end
-    boris -->|deploys| proxy
-    laptop[Laptop] & mobile[Mobile] -.-> |connects| proxy{Shadowsocks\nProxy}
-    proxy <-.->|connects| internet((Internet))
+    hydra -->|deploys| proxy & proxy2
+
+    subgraph VM1
+        proxy{Proxy}
+    end
+
+    subgraph VM2
+        proxy2{Proxy}
+    end
+
+    laptop[Laptop] -..-> |connects| proxy
+    phone[Mobile] -..-> |connects|proxy2
+    proxy & proxy2 <-.->|connects| internet((Internet))
 ```
-System flow:
-1. User interacts with Boris's Web UI to manage Shadowsocks deployments.
-2. Periodically, a Terraform deployment is applied to deploy the Shadowsocks proxy on Alibaba cloud's Simple Application Server. The latter service was choosen as it bundles a generous egress data transfer together with a stable, monthly price [^3].
-3. Shadowsocks server proxies requests from clients (eg. CLI & Android  App) to the internet, circumventing internet censorship.  The server uses state of the art SIP022 cipher `2022-blake3-aes-128-gcm` [^1]
+
+User flow:
+1. User deploys a Linux Machine to host the proxy. For an example, see the Terraform deployment on Alibaba Cloud's Simple Application Server [^3].
+2. User enrolls the Linux Machine's SSH credentials on with Boris's Web UI. Boris will deploy Shadowsocks proxies on the machine.
+3. Configuration changes made by the user (eg. password, cipher changes) are automatically reflected on the deployed proxies.
+
+> As of writing,  the recommended cipher is  `2022-blake3-aes-128-gcm` [^1]
+
+4. Shadowsocks proxies requests from clients (eg. CLI & Android  App) to the internet, circumventing internet censorship.
 
 ### Alternatives Considered
-TLS based proxies (eg. Trojan, V2Ray over Websocket) were passed up as there were reports of them being intercepted and being blocked in China [^2]
+Why shadowsocks? TLS based proxies (eg. Trojan, V2Ray over Websocket) were passed up as there were reports of them being intercepted and being blocked in China [^2]
 
 # References
 [^1]:  “SIP022: Shadowsocks 2022 Edition · Issue #196 · shadowsocks/shadowsocks-org,” _GitHub_. https://github.com/shadowsocks/shadowsocks-org/issues/196 (accessed Nov. 11, 2022).

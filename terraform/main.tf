@@ -1,6 +1,6 @@
 #
-# Boris
-# Terraform Deployment on Alibaba Cloud
+# Hydra
+# Example Terraform of Linux Host Machine
 #
 
 terraform {
@@ -32,10 +32,10 @@ data "alicloud_simple_application_server_plans" "plans" {
   platform  = "Linux"
 }
 
-resource "alicloud_simple_application_server_instance" "boris" {
+resource "alicloud_simple_application_server_instance" "hydra" {
   payment_type  = "Subscription"
   period        = 1 # 1 month
-  instance_name = "boris"
+  instance_name = "hydra"
   plan_id       = data.alicloud_simple_application_server_plans.plans.plans.0.id
   image_id      = data.alicloud_simple_application_server_images.images.images.0.id
 }
