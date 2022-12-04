@@ -1,0 +1,7 @@
+#
+# Hydra
+# Ansible Shadowsocks deployment
+#
+
+shadowsocks_rust_version: v1.14.3
+shadowsocks_password: ""

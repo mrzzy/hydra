@@ -1,0 +1,13 @@
+#
+# Hydra
+# Ansible Shadowsocks deployment
+#
+
+- name: Install shadowsocks-rust binaries
+  become: true
+  ansible.builtin.unarchive:
+    remote_src: true
+    src: "https://github.com/shadowsocks/shadowsocks-rust/releases/download/{{ shadowsocks_rust_version }}\
+          /shadowsocks-{{ shadowsocks_rust_version }}.{{ ansible_architecture }}-unknown-linux-gnu.tar.xz"
+    dest: /usr/local/bin
+    creates: /usr/local/bin/ssserver
