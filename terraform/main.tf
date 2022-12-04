@@ -39,3 +39,11 @@ resource "alicloud_simple_application_server_instance" "hydra" {
   plan_id       = data.alicloud_simple_application_server_plans.plans.plans.0.id
   image_id      = data.alicloud_simple_application_server_images.images.images.0.id
 }
+
+
+resource "alicloud_simple_application_server_firewall_rule" "hydra" {
+  instance_id   = alicloud_simple_application_server_instance.hydra.id
+  rule_protocol = "Tcp"
+  port          = "8399"
+  remark        = "proxy"
+}
