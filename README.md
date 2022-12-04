@@ -2,9 +2,10 @@
 Deploy & manage multiple Shadowsocks proxies from one place.
 
 ## Features
-- Automated proxy deployment facilitates the quick spin up  of new proxies if one is blocked.
+- Automated proxy deployment facilitates the quick spin up of new proxies if one is blocked.
 - Centrally manage multiple proxy deployments from one place.
 - User friendly Web user interface.
+- Sane defaults. Shadowsocks cipher `2022-blake3-aes-256-gcm` takes advantage of hardware acceleration [^1].
 
 ## Design
 ```mermaid
@@ -29,12 +30,9 @@ flowchart TD
 ```
 
 User flow:
-1. User deploys a Linux Machine to host the proxy. For an example, see the Terraform deployment on Alibaba Cloud's Simple Application Server [^3].
+1. User deploys a Linux Machine (with SSH & systemd) to host the proxy. For an example, see the Terraform deployment on Alibaba Cloud's Simple Application Server [^3].
 2. User enrolls the Linux Machine's SSH credentials on with Boris's Web UI. Boris will deploy Shadowsocks proxies on the machine.
 3. Configuration changes made by the user (eg. password, cipher changes) are automatically reflected on the deployed proxies.
-
-> As of writing,  the recommended cipher is  `2022-blake3-aes-128-gcm` [^1]
-
 4. Shadowsocks proxies requests from clients (eg. CLI & Android  App) to the internet, circumventing internet censorship.
 
 ### Alternatives Considered
