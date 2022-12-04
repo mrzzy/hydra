@@ -6,7 +6,7 @@
 - name: Install shadowsocks-rust binaries
   become: true
   vars:
-    version: shadowsocks_version
+    version: "{{ shadowsocks_version }}"
   ansible.builtin.unarchive:
     remote_src: true
     src: "https://github.com/shadowsocks/shadowsocks-rust/releases/download/{{ version }}\
