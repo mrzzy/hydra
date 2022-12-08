@@ -68,4 +68,5 @@
   ansible.builtin.systemd:
     name: shadowsocks
     enabled: true
-    state: started
+    daemon_reload: true
+    state: restarted
