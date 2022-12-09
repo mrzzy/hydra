@@ -44,7 +44,7 @@ export default function ProxyForm() {
   ].map(c => { return { value: c, label: c } });
 
   function submit(proxy: ProxyData) {
-    fetch("/api/proxy", {
+    fetch("/api/proxies", {
       method: "PUT",
       body: JSON.stringify(proxy)
     });
