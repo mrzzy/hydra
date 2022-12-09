@@ -18,21 +18,23 @@ export interface ProxyData {
 
 /** Wrapper around {@link ProxyData} providing helper methods */
 export class Proxy {
-  data: ProxyData
+  _data: ProxyData
 
   constructor(data: ProxyData) {
-    this.data = data;
+    this._data = data;
   }
   address(): string {
-    return `${this.data.host}:${this.data.port}`;
+    return `${this._data.host}:${this._data.port}`;
   }
-  json(): string {
-    return JSON.stringify({
-      ...this.data,
-      password: null,
-    });
+  data(): ProxyData {
+    return {
+      ...this._data,
+      // clear sensitive password field from object representation
+      password: "",
+    };
   }
 }
+
 function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -40,15 +42,21 @@ function handler(
   const store: KVStore = new JSONStore("proxies.json");
 
   switch (req.method) {
+    case "GET":
+      const proxies = store.keys().map(k => new Proxy(store.get(k))).map(p => p.data());
+      res.status(200).json({ proxies });
+      break;
     // proxy form submit: register new server
-    case 'PUT':
+    case "PUT":
       const proxy = new Proxy(JSON.parse(req.body) as ProxyData);
-      store.set(proxy.address(), proxy.data);
-      res.status(200).end();
+      store.set(proxy.address(), proxy.data)
+      res.status(200)
+        .end();
       break;
     default:
       // unsupported request method
-      res.status(405).setHeader("Allows", "PUT").end();
+      res.status(405)
+        .setHeader("Allows", "PUT").end();
   }
 }
 
