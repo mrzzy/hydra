@@ -9,6 +9,7 @@ import * as fs from 'node:fs'
 export interface KVStore {
   get(key: string): any
   set(key: string, value: any): void
+  keys(): string[]
 }
 
 /** Key Value stored backed by JSON file persistence. */
@@ -20,7 +21,7 @@ export class JSONStore implements KVStore {
     this.path = path
 
     // load copy of data into memory
-    if(fs.existsSync(this.path)) {
+    if (fs.existsSync(this.path)) {
       this.data = JSON.parse(
         fs.readFileSync(this.path).toString()
       );
@@ -37,5 +38,9 @@ export class JSONStore implements KVStore {
     this.data[key] = value
     // persist data as json on disk
     fs.writeFileSync(this.path, JSON.stringify(this.data));
+  }
+
+  keys(): string[] {
+    return Object.keys(this.data);
   }
 }
