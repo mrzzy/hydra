@@ -1,78 +1,103 @@
 /**
- * Hydra Ui
+ * Hydra UI
  * Components
  * ProxyForm
  */
 
-import { Form, Input, InputNumber, Tooltip } from 'antd'
-
-interface FormItemProps {
-  label: string
-  required?: boolean
-  tooltip: string
-  children: JSX.Element
-}
-
-
-/** Rewrites & the given text in 'kebab-case' */
-function slugify(text: string): string {
-  return text.split(" ").map(token => token.toLowerCase()).join(" ");
-}
-
-const FormItem = ({ label, required, tooltip, children }: FormItemProps): JSX.Element => {
-  return (
-    <Form.Item
-      name={slugify(label)}
-      label={label}
-      rules={[{ required }]}
-    >
-      <Tooltip placement='right' trigger={["focus"]} title={tooltip}>
-        {children}
-      </Tooltip>
-    </Form.Item>
-  );
-}
+import { Button, Form, Input, InputNumber, Select, Tooltip } from 'antd'
+import { ProxyData } from '../pages/api/proxy'
+import { csrfFetch as fetch } from '../csrf'
 
 /**
  * Form to collect user input on Proxy configuration.
  */
 export default function ProxyForm() {
+  // Form Item Wrapper
+  interface ItemProps {
+    id: string
+    label: string
+    required?: boolean
+    tooltip: string
+    children: JSX.Element
+  }
+
+  const Item = ({ id, label, required, tooltip, children }: ItemProps): JSX.Element => {
+    return (
+      <Tooltip placement='topRight' trigger={["focus"]} title={tooltip}>
+        <Form.Item
+          name={id}
+          label={label}
+          rules={[{ required }]}
+        >
+          {children}
+        </Form.Item>
+      </Tooltip>
+    );
+  };
+
+  // Supported cipher options for shadowsocks proxy
+  const supportedCiphers = [
+    "2022-blake3-aes-256-gcm",
+    "2022-blake3-aes-128-gcm",
+    "2022-blake3-chacha20-poly1305",
+    "2022-blake3-chacha8-poly1305"
+  ].map(c => { return { value: c, label: c } });
+
+  function submit(proxy: ProxyData) {
+    fetch("/api/proxy", {
+      method: "PUT",
+      body: JSON.stringify(proxy)
+    });
+  }
+
   return (
     <Form
-      labelCol={{ span: 4 }}
+      labelCol={{ span: 2 }}
       wrapperCol={{ span: 8 }}
+      onFinish={submit}
     >
-      <FormItem
-        label="IP Address"
+      <Item
+        id="host"
+        label="Host"
         required={true}
-        tooltip="Publicly accessible IPV4 address of the Proxy."
+        tooltip="Publicly accessible host/IP of the Proxy."
       >
         <Input placeholder="0.0.0.0" />
-      </FormItem>
+      </Item>
 
-      <FormItem
-        label="Port Number"
+      <Item
+        id="port"
+        label="Port"
         required={true}
         tooltip="Exposed port to listen for Proxy requests."
       >
         <InputNumber placeholder="8388" min={1} />
-      </FormItem>
+      </Item>
 
-      <FormItem
+      <Item
+        id="password"
         label="Password"
         required={true}
         tooltip="Password for authenticating Proxy clients."
       >
-        <Input.Password />
-      </FormItem>
+        <Input.Password minLength={8} />
+      </Item>
 
-      <FormItem
+      <Item
+        id="cipher"
         label="Cipher"
         required={true}
         tooltip="Cipher used to encrypt network transmission between the Proxy & clients."
       >
-        <Input defaultValue="2022-blake3-aes-256-gcm" />
-      </FormItem>
+        <Select options={supportedCiphers} defaultValue={supportedCiphers[0]}/>
+      </Item>
+
+      <Form.Item
+        name="submit"
+        wrapperCol={{ offset: 2 }}
+      >
+        <Button type="primary" htmlType="submit">Save</Button>
+      </Form.Item>
     </Form>
   );
 }
