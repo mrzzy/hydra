@@ -34,7 +34,7 @@
           "password": "{{ shadowsocks_password }}",
           "method": "{{ shadowsocks_cipher }}",
           "mode": "tcp_and_udp",
-          "dns": "quad9_tls"
+          "dns": "cloudflare"
       }
     dest: "{{ shadowsocks_config }}"
     mode: 0644
