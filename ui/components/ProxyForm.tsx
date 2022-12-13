@@ -52,8 +52,8 @@ export default function ProxyForm() {
 
   return (
     <Form
-      labelCol={{ span: 2 }}
-      wrapperCol={{ span: 8 }}
+      labelCol={{ span: 6 }}
+      wrapperCol={{ span: 16 }}
       onFinish={submit}
     >
       <Item
