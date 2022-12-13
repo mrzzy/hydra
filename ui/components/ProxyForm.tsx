@@ -5,7 +5,7 @@
  */
 
 import { Button, Form, Input, InputNumber, Select, Tooltip } from 'antd'
-import { ProxyData } from '../pages/api/proxy'
+import { ProxyData } from '../pages/api/proxies'
 import { csrfFetch as fetch } from '../csrf'
 
 /**
