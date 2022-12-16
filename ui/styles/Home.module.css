@@ -4,6 +4,46 @@
  * Styles
 */
 
+
+/* NoServers component */
+.noServers {
+  margin: 4rem;
+  text-align: center;
+}
+.noServersTitle {
+  font-size: 3.6rem;
+}
+
+/* StatusIndicator component */
+.status {
+  height: 10pt;
+  width: 10pt;
+}
+.statusOnline {
+  composes: status;
+  background-color: #76B170;
+  border-radius: 50%;
+}
+.statusOffline {
+  composes: status;
+  background-color:  #D0D0D0;
+  border-radius: 50%;
+}
+
+/* Servers component */
+.servers {
+  padding: 0 8vw 4rem 8vw;
+}
+.serversHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.serversTitle {
+  font-size: 3.6rem;
+}
+
 .header {
   background-color: white !important;
   padding: 0 8vw 0 8vw !important;
@@ -17,12 +57,4 @@
 .logoTitle {
   font-size: 2.1rem;
   margin-left: 1rem;
-}
-
-.noServers {
-  margin: 4rem;
-  text-align: center;
-}
-.noServersTitle {
-  font-size: 3.6rem;
 }

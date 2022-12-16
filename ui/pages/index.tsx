@@ -4,16 +4,26 @@
  * Homepage
  */
 import React, { useEffect, useState } from 'react'
-import { Button, ConfigProvider, Layout, Space } from 'antd';
+import { Button, ConfigProvider, Layout, Table } from 'antd';
 import Image from 'next/image';
 import styles from 'styles/Home.module.css';
 import { Rye } from '@next/font/google'
+import type { ColumnType } from 'antd/es/table';
 
 const DisplayFont = Rye({ weight: '400', });
 
-/**
- * Renders a graphic to users when no servers are registered.
- */
+interface Server {
+  isOnline: boolean
+  latencyMs: number
+  host: string
+  port: number
+  cipher: string
+}
+
+
+const AddButton = () => <Button type="primary">Add Server</Button>;
+
+/** Renders a graphic to users when no servers are registered. */
 function NoServers() {
   return (
     <div className={styles.noServers}>
@@ -24,27 +34,53 @@ function NoServers() {
         width={578}
       />
       <h1 className={`${DisplayFont.className} ${styles.noServersTitle}`}>No Servers</h1>
-      <Button type="primary">Add Server</Button>
+      <AddButton />
     </div>
   );
 }
 
-/**
- * Homepage renders a overview of proxy servers.
- */
-export default function Home() {
-  interface Server {
-    isOnline: boolean
-    latencyMs: number
-    address: {
-      host: string
-      port: number
+/** Render a status indicator-to convey to whether the server is is online. */
+function StatusIndicator(isOnline: boolean) {
+  return isOnline ?
+    (<div className={styles.statusOnline}></div>) :
+    (<div className={styles.statusOffline}></div>);
+}
+
+/** Renders a table currently registered servers */
+function Servers(servers: Server[]) {
+  const columns: ColumnType<Server>[] = [
+    {
+      title: "Status",
+      dataIndex: "isOnline",
+      render: StatusIndicator,
     }
-    cipher: string
-  }
+  ];
+
+  return (
+    <div className={styles.servers}>
+      <div className={styles.serversHeader}>
+        <h1 className={`${DisplayFont.className} ${styles.serversTitle}`}>Servers</h1>
+        <AddButton />
+      </div>
+      <Table columns={columns} dataSource={servers} />
+    </div>
+  );
+}
+export default function Home() {
   // initially, render with no servers,
-  const [servers, setServers] = useState([]);
+  const [servers, setServers] = useState([
+    {
+      key: "test",
+      isOnline: true,
+      latencyMs: 300,
+      host: "127.0.0.1",
+      port: 1080,
+      cipher: "2022-blake3-aes-256-gcm"
+    }
+  ]);
+
   // TODO: trigger an api call effect to fetch currently registered Servers
+  const content = (servers.length <= 0) ? NoServers() : Servers(servers);
 
   return (
     <ConfigProvider theme={{
@@ -61,7 +97,7 @@ export default function Home() {
         </Layout.Header>
 
         <Layout.Content>
-          {(servers.length <= 0) ? <NoServers /> : null}
+          {content}
         </Layout.Content>
       </Layout>
     </ConfigProvider>
