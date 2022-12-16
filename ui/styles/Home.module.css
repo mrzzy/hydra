@@ -6,7 +6,8 @@
 
 .header {
   background-color: white !important;
-  padding: 2vh 8vw 2vh 8vw !important; }
+  padding: 0 8vw 0 8vw !important;
+}
 
 .logo {
   display: flex;
@@ -14,6 +15,14 @@
 }
 
 .logoTitle {
-  font-size: 2.4rem;
+  font-size: 2.1rem;
   margin-left: 1rem;
+}
+
+.noServers {
+  margin: 4rem;
+  text-align: center;
+}
+.noServersTitle {
+  font-size: 3.6rem;
 }
