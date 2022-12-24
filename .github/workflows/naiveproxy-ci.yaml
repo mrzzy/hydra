@@ -20,7 +20,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: action/checkout@v3
+      - uses: actions/checkout@v3
       - name: Build Naiveproxy container
         run: 
           docker build . -t ${IMAGE}
