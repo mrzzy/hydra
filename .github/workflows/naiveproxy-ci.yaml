@@ -1,0 +1,32 @@
+#
+# Hydra
+# Naiveproxy Docker
+# CI Pipeline
+#
+
+name: Naiveproxy CI
+on:
+  push: {}
+jobs:
+  build-publish-container:
+    name: Build & Publish Naiveproxy Docker container
+    env:
+      IMAGE: ghcr.io/mrzzy/naiveproxy
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: docker/naiveproxy
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: action/checkout@v3
+      - name: Build Naiveproxy container
+        run: 
+          docker build . -t ${IMAGE}
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Push Naiveproxy container
+        # if: ${{ github.ref == "refs/heads/main" }}
+        run: 
+          docker push ${IMAGE}

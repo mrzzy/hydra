@@ -6,7 +6,6 @@
 
 ARG CADDY_VERSION=2.6.2
 FROM caddy:$CADDY_VERSION-builder AS build
-
 # build caddy with naiveproxy plugin
 RUN xcaddy build \
   --with github.com/caddyserver/forwardproxy@caddy2=github.com/klzgrad/forwardproxy@naive \
