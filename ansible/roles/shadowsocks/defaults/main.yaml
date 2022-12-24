@@ -3,7 +3,7 @@
 # Ansible Shadowsocks deployment
 #
 
-shadowsocks_version: v1.15.0-alpha.9
+shadowsocks_version: v1.15.1
 shadowsocks_bin: /usr/local/bin/ssserver
 shadowsocks_config: /etc/shadowsocks.json
 shadowsocks_listen_ip: 0.0.0.0
