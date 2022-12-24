@@ -5,6 +5,6 @@
 #
 
 - name: Deploy Hydra Proxies
-  hosts: proxies
+  hosts: all
   roles:
     - shadowsocks
