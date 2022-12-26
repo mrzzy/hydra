@@ -50,7 +50,7 @@
   ansible.builtin.copy:
     content: |
       [Unit]
-      Description=Shadowsocks - proxy server that helps you bypass firewalls.
+      Description=Shadowsocks server - deployed by Hydra
 
       [Install]
       WantedBy=multi-user.target

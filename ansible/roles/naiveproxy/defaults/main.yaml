@@ -1,0 +1,15 @@
+#
+# Hydra
+# Naiveproxy Ansible Role
+# Default Variables
+#
+
+# DNS domain that resolves to the server
+naiveproxy_domain:
+# email provided to the ACME registar
+naiveproxy_acme_email:
+# ACME endpoint used to obtain a TLS certificate
+naiveproxy_acme_endpoint: https://acme-v02.api.letsencrypt.org/directory
+# HTTP basic authentication credentials used to authenticate proxy users
+naiveproxy_username: user
+naiveproxy_password:

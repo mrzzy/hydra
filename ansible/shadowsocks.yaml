@@ -1,10 +1,10 @@
 #
-#
 # Hydra
 # Ansible Playbook
+# Shadowsocks
 #
 
-- name: Deploy Hydra Proxies
+- name: Deploy Hydra Shadowsocks proxies
   hosts: all
   roles:
     - shadowsocks

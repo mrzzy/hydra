@@ -1,0 +1,47 @@
+#
+# Hydra
+# Naiveproxy Ansible Role
+# Tasks
+#
+
+- name: Install Docker
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    name: docker.io
+    state: present
+
+- name: Write Naiveproxy Systemd service
+  become: true
+  ansible.builtin.copy:
+    # port 80 required for naiveproxy to perform ACME HTTP challenge
+    content: |
+      [Unit]
+      Description=Naiveproxy server - deployed by Hydra
+
+      [Install]
+      WantedBy=multi-user.target
+
+      [Service]
+      Type=simple
+      ExecStart=/usr/bin/docker run \
+      -e "DOMAIN={{ naiveproxy_domain }}" \
+      -e "ACME_ENDPOINT={{ naiveproxy_acme_endpoint }}" \
+      -e "ACME_EMAIL={{ naiveproxy_acme_email }}" \
+      -e "USERNAME={{ naiveproxy_username }}" \
+      -e "PASSWORD={{ naiveproxy_password }}" \
+      -p 443:443 \
+      -p 80:80 \
+      ghcr.io/mrzzy/naiveproxy:latest
+
+      Restart=always
+    dest: /etc/systemd/system/naiveproxy.service
+    mode: 0644
+
+- name: Enable & Start Naiveproxy systemd service
+  become: true
+  ansible.builtin.systemd:
+    name: naiveproxy
+    enabled: true
+    daemon_reload: true
+    state: restarted

@@ -1,0 +1,10 @@
+#
+# Hydra
+# Ansible Playbook
+# Naiveproxy
+#
+
+- name: Deploy Hydra Naiveproxy proxies
+  hosts: all
+  roles:
+    - naiveproxy
